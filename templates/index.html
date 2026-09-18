@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CIFAR-10 — Image Classification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-left">
+        <h1 class="logotype">CIFAR-10</h1>
+        <span class="logotype-sub">Image Classification System</span>
+      </div>
+      <div class="header-right">
+        <span class="meta-tag">PyTorch</span>
+        <span class="meta-tag">Custom CNN</span>
+        <span class="meta-tag active">{{ device_name }}</span>
+      </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="grid-main">
+
+      <!-- 01 — SYSTEM INFO -->
+      <section class="grid-cell cell-info">
+        <div class="section-index">01</div>
+        <h2 class="section-title">System</h2>
+        <div class="info-table">
+          <div class="info-row">
+            <span class="info-label">Model</span>
+            <span class="info-value">Custom CNN</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Dataset</span>
+            <span class="info-value">CIFAR-10</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Classes</span>
+            <span class="info-value">10</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Input</span>
+            <span class="info-value">32 &times; 32 RGB</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Framework</span>
+            <span class="info-value">PyTorch</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Device</span>
+            <span class="info-value">{{ device_name }}</span>
+          </div>
+        </div>
+        <div class="class-list">
+          <span class="caption">Classifiable objects&thinsp;—</span>
+          <span class="class-tag">Airplane</span>
+          <span class="class-tag">Automobile</span>
+          <span class="class-tag">Bird</span>
+          <span class="class-tag">Cat</span>
+          <span class="class-tag">Deer</span>
+          <span class="class-tag">Dog</span>
+          <span class="class-tag">Frog</span>
+          <span class="class-tag">Horse</span>
+          <span class="class-tag">Ship</span>
+          <span class="class-tag">Truck</span>
+        </div>
+      </section>
+
+      <!-- 02 — UPLOAD -->
+      <section class="grid-cell cell-upload">
+        <div class="section-index">02</div>
+        <h2 class="section-title">Upload</h2>
+
+        <div id="drop-area" class="drop-zone">
+          <input type="file" id="fileElem" accept="image/*" />
+          <div class="drop-zone-inner">
+            <span class="drop-arrow">&uarr;</span>
+            <span class="drop-text">Drop image here</span>
+            <span class="drop-caption">PNG / JPG / JPEG / GIF / BMP &mdash; Max 4 MB</span>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="chooseBtn" class="btn">Browse File</button>
+          <button id="predictBtn" class="btn btn-primary" disabled>Classify</button>
+          <button id="resetBtn" class="btn" style="display:none">Reset</button>
+        </div>
+
+        <div id="message" class="message"></div>
+      </section>
+
+      <!-- 03 — PREVIEW -->
+      <section class="grid-cell cell-preview" id="previewSection" style="display:none">
+        <div class="section-index">03</div>
+        <h2 class="section-title">Preview</h2>
+        <div class="image-frame" id="imagePreview"></div>
+      </section>
+
+      <!-- 04 — RESULT -->
+      <section class="grid-cell cell-result" id="resultSection" style="display:none">
+        <div class="section-index">04</div>
+        <h2 class="section-title">Result</h2>
+
+        <div class="result-block">
+          <span class="result-caption">Classification</span>
+          <div id="predictionText" class="result-headline">&mdash;</div>
+        </div>
+
+        <div class="result-block">
+          <span class="result-caption">Confidence</span>
+          <div class="confidence-row">
+            <span id="confidenceValue" class="confidence-number">&mdash;</span>
+            <div class="bar-track">
+              <div id="progressBar" class="bar-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-block">
+          <span class="result-caption">Top 3 Predictions</span>
+          <div class="top3-table" id="top3List"></div>
+        </div>
+      </section>
+
+    </div><!-- /grid-main -->
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <span>CIFAR-10 AI Classifier</span>
+      <span>&copy; 2026</span>
+    </footer>
+
+  </div><!-- /page -->
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
