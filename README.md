@@ -79,8 +79,4 @@ A high-performance image classification web application trained on the **CIFAR-1
    ```
 
 
----
 
-## License
-
-MIT License. Open for educational and personal use.
