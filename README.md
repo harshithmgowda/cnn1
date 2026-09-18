@@ -77,6 +77,3 @@ A high-performance image classification web application trained on the **CIFAR-1
    ```text
    http://127.0.0.1:5000
    ```
-
-
-

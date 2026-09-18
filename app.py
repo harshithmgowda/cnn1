@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import onnxruntime as ort
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "cifar10_cnn.onnx")
@@ -15,9 +17,13 @@ MAX_CONTENT_LENGTH = 4 * 1024 * 1024  # 4 MB max upload
 app = Flask(
     __name__,
     static_folder=os.path.join(BASE_DIR, "static"),
+    static_url_path="/static",
     template_folder=os.path.join(BASE_DIR, "templates"),
 )
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
+# Wrap with ProxyFix for reverse-proxy deployments (Vercel, Nginx)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # CIFAR-10 classes (index 0..9)
 CLASSES = [
@@ -68,12 +74,27 @@ def allowed_file(filename):
 
 
 @app.route("/", methods=["GET"])
+@app.route("/index", methods=["GET"])
+@app.route("/index.html", methods=["GET"])
+@app.route("/api", methods=["GET"])
+@app.route("/api/index", methods=["GET"])
+@app.route("/api/index.py", methods=["GET"])
 def index():
     return render_template("index.html", device_name=device_name)
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET", "POST"])
+@app.route("/api/predict", methods=["GET", "POST"])
 def predict():
+    # Provide helpful response if opened via GET in browser
+    if request.method == "GET":
+        return jsonify({
+            "status": "online",
+            "endpoint": request.path,
+            "method": "POST",
+            "description": "Send a POST request with an image file under the 'image' field to classify."
+        })
+
     # Validate file present
     if "image" not in request.files:
         return jsonify({"error": "No image part in the request. Please select an image first."}), 400
@@ -130,6 +151,16 @@ def predict():
         })
     except Exception as e:
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
+
+
+@app.errorhandler(404)
+def handle_not_found(e):
+    # If the user opens an unknown path in browser, serve the UI seamlessly
+    if request.accept_mimetypes.accept_html:
+        return render_template("index.html", device_name=device_name)
+    return jsonify({
+        "error": "The requested URL was not found on the server. Please check your spelling and try again."
+    }), 404
 
 
 if __name__ == "__main__":
