@@ -78,20 +78,6 @@ A high-performance image classification web application trained on the **CIFAR-1
    http://127.0.0.1:5000
    ```
 
----
-
-## Deploying to Vercel
-
-1. Push your repository to GitHub:
-   ```bash
-   git push -u origin master
-   ```
-
-2. Go to [vercel.com](https://vercel.com) and log in.
-3. Click **Add New...** → **Project**.
-4. Import the `cnn1` repository from GitHub.
-5. Keep default settings and click **Deploy**.
-6. Vercel will automatically install `requirements.txt`, bundle `api/index.py`, and serve your app.
 
 ---
 
